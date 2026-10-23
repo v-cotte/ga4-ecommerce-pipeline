@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: daily_metrics
+    description: One row per day with revenue, order, customer and traffic metrics.
+    columns:
+      - name: event_date
+        data_tests: [unique, not_null]
+      - name: gross_revenue
+        data_tests: [not_null]
+      - name: net_revenue
+        description: gross_revenue - refund_amount
+      - name: total_orders
+        data_tests: [not_null]
+      - name: new_customers
+        description: Customers whose first-ever purchase falls on this day.
+      - name: conversion_rate_pct
+        description: total_orders / total_sessions * 100
+
+  - name: weekly_metrics
+    description: Same metrics as daily_metrics, aggregated to ISO weeks (Monday start) from stg_events.
+    columns:
+      - name: week_start_date
+        data_tests: [unique, not_null]
+      - name: gross_revenue
+        data_tests: [not_null]
+      - name: total_orders
+        data_tests: [not_null]
+
+  - name: top_products
+    description: >
+      Product-level revenue and quantity across the reporting window, ranked both ways.
+      Reads item arrays from the public GA4 source (UNNEST(items)).
+    columns:
+      - name: item_id
+        data_tests: [not_null]
+      - name: total_revenue
+        data_tests: [not_null]
+      - name: revenue_rank
+        data_tests: [not_null]

@@ -1,0 +1,18 @@
+version: 2
+
+models:
+  - name: stg_events
+    description: >
+      Cleaned GA4 events. Dates parsed, session_engaged cast to boolean,
+      '(not set)' transaction IDs nulled, revenue fields defaulted to 0, and a
+      surrogate order_key built because transaction_id is unreliable.
+    columns:
+      - name: event_date
+        data_tests: [not_null]
+      - name: event_name
+        data_tests: [not_null]
+      - name: user_pseudo_id
+        data_tests: [not_null]
+      - name: order_key
+        description: user_pseudo_id + event_timestamp; one per purchase event.
+        data_tests: [not_null]
