@@ -20,7 +20,7 @@ WITH source AS (
         device_category,
         country,
         ingested_at
-    FROM `{{ env_var('DBT_PROJECT_ID') }}.ecommerce_raw.raw_events`
+    FROM {{ source('ecommerce_raw', 'raw_events') }}
 ),
 
 cleaned AS (

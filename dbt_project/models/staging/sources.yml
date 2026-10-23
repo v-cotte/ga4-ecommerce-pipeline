@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: ecommerce_raw
+    description: Raw GA4 events landed by pipelines/extract.py.
+    database: "{{ env_var('DBT_PROJECT_ID') }}"
+    schema: ecommerce_raw
+    tables:
+      - name: raw_events
+        description: One row per GA4 event, flattened at extraction time.
+        loaded_at_field: ingested_at
+        columns:
+          - name: event_name
+            data_tests:
+              - not_null
+          - name: user_pseudo_id
+            data_tests:
+              - not_null
+
+  - name: ga4_public
+    description: Google's public GA4 obfuscated e-commerce sample (Google Merchandise Store).
+    database: bigquery-public-data
+    schema: ga4_obfuscated_sample_ecommerce
+    tables:
+      - name: events
+        identifier: "events_*"
+        description: >
+          Date-sharded event tables. Read directly only for item-level data,
+          which requires UNNEST(items) and is not landed in raw_events.

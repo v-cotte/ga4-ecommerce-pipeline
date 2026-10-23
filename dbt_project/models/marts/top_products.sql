@@ -19,11 +19,11 @@ WITH purchases AS (
         item.quantity,
         COALESCE(item.item_revenue, 0)      AS item_revenue
     FROM
-        `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`,
+        {{ source('ga4_public', 'events') }},
         UNNEST(items) AS item
     WHERE
         event_name = 'purchase'
-        AND _TABLE_SUFFIX BETWEEN '20201101' AND '20210131'
+        AND _TABLE_SUFFIX BETWEEN '{{ var("start_date") }}' AND '{{ var("end_date") }}'
 	AND item.item_id IS NOT NULL
     	AND item.item_name != '(not set)'
     	AND item.item_revenue > 0
