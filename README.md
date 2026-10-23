@@ -112,9 +112,13 @@ python main.py
 
 # Individual stages
 python pipelines/extract.py
-cd dbt_project && dbt run
+cd dbt_project && dbt build   # runs models + 18 data tests
 python pipelines/export_sheets.py
 ```
+
+### Data quality
+
+`dbt build` runs 18 tests alongside the models: grain checks (one row per day / ISO week), `not_null` on keys and metrics, source tests on the raw table, and a singular test that reconciles `net_revenue = gross_revenue - refund_amount`.
 
 ---
 
